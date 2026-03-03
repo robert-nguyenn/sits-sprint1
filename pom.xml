@@ -2,11 +2,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>rest</groupId>
-	<artifactId>restAPI</artifactId>
+	<groupId>csc360</groupId>
+	<artifactId>sits-sprint1</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>REST</name>
-	<description>testing rest</description>
+	<name>SITS Sprint 1</name>
+	<description>Strategic Interaction Tournament Simulator</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>17</maven.compiler.source>
