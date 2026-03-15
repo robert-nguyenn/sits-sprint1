@@ -11,21 +11,29 @@ import sits.participant.AlwaysCooperate;
 import sits.participant.AlwaysDefect;
 import sits.participant.TitForTat;
 import sits.tournament.RoundRobin;
+import sits.tournament.TournamentResult;
 
 public class RoundRobinTest {
 
     @Test
-    void roundRobin_threePlayers_runsThreeMatches_andFiresTournamentOver() {
-        var game = new IteratedPrisonersDilemma(1); // 1 round per match to keep counts simple
-        var obs = new FakeObserver();
-        game.addObserver(obs);
+    void roundRobin_runsAllMatches_andFiresTournamentOver() {
+        IteratedPrisonersDilemma game = new IteratedPrisonersDilemma(1);
+        FakeObserver observer = new FakeObserver();
+        game.addObserver(observer);
 
-        var rr = new RoundRobin();
-        rr.run(List.of(new TitForTat(), new AlwaysDefect(), new AlwaysCooperate()), game);
+        RoundRobin rr = new RoundRobin();
+        TournamentResult result = rr.run(
+                List.of(new TitForTat(), new AlwaysDefect(), new AlwaysCooperate()),
+                game
+        );
 
-        // 3 matches, 1 round each => 3 move events total
-        assertEquals(3, obs.moves.size());
-        assertNotNull(obs.tournament);
-        assertTrue(obs.tournament.getScoresCopy().containsKey("AlwaysDefect"));
+        assertEquals(3, observer.moves.size());
+        assertEquals(3, observer.games.size());
+        assertNotNull(observer.tournament);
+
+        assertEquals(10, result.getScore("AlwaysDefect"));
+        assertEquals(3, result.getScore("TitForTat"));
+        assertEquals(3, result.getScore("AlwaysCooperate"));
+        assertEquals("AlwaysDefect", result.getRankings().get(0));
     }
 }
