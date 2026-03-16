@@ -11,15 +11,15 @@ import sits.participant.TitForTat;
 public class TitForTatTest {
 
     @Test
-    void titForTat_cooperatesFirst_thenMirrors() {
-        var game = new IteratedPrisonersDilemma(2);
-        var obs = new FakeObserver();
-        game.addObserver(obs);
+    void titForTat_cooperatesFirst_thenMirrorsDefect() {
+        IteratedPrisonersDilemma game = new IteratedPrisonersDilemma(2);
+        FakeObserver observer = new FakeObserver();
+        game.addObserver(observer);
 
         game.play(new TitForTat(), new AlwaysDefect());
 
-        assertEquals(2, obs.moves.size());
-        assertEquals("COOPERATE", obs.moves.get(0).getRoundResult().getActionP1().getLabel());
-        assertEquals("DEFECT", obs.moves.get(1).getRoundResult().getActionP1().getLabel());
+        assertEquals(2, observer.moves.size());
+        assertEquals("COOPERATE", observer.moves.get(0).getRoundResult().getActionP1().getLabel());
+        assertEquals("DEFECT", observer.moves.get(1).getRoundResult().getActionP1().getLabel());
     }
 }
