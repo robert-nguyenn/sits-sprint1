@@ -1,25 +1,43 @@
 package sits;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 
 import java.net.UnknownHostException;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.boot.web.server.WebServer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import sits.remote.ClientApp;
 import sits.remote.TournamentServerClient;
 
 class ClientAppTest {
+
+    @Test
+    void mainDelegatesToSpringApplicationRun() {
+        String[] args = new String[] {"--spring.main.web-application-type=none"};
+
+        try (MockedStatic<SpringApplication> spring = Mockito.mockStatic(SpringApplication.class)) {
+            ConfigurableApplicationContext ctx = mock(ConfigurableApplicationContext.class);
+            spring.when(() -> SpringApplication.run(ClientApp.class, args)).thenReturn(ctx);
+
+            ClientApp.main(args);
+
+            spring.verify(() -> SpringApplication.run(ClientApp.class, args), times(1));
+        }
+    }
 
     @Test
     void resolveLocalIpReturnsNonBlank() throws UnknownHostException {
@@ -35,14 +53,6 @@ class ClientAppTest {
 
         assertNotNull(ip);
         assertFalse(ip.isBlank());
-    }
-
-    private abstract static class ClientAppWithAccess extends ClientApp {
-        ClientAppWithAccess(TournamentServerClient client) {
-            super(client);
-        }
-
-        abstract String callResolveLocalIp() throws UnknownHostException;
     }
 
     @Test
@@ -93,6 +103,14 @@ class ClientAppTest {
 
         assertNotNull(restTemplate);
         assertNotNull(built);
+    }
+
+    private abstract static class ClientAppWithAccess extends ClientApp {
+        ClientAppWithAccess(TournamentServerClient client) {
+            super(client);
+        }
+
+        abstract String callResolveLocalIp() throws UnknownHostException;
     }
 
     private static class CapturingTournamentClient extends TournamentServerClient {

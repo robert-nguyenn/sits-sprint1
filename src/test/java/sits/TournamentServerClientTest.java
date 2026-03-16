@@ -82,4 +82,10 @@ class TournamentServerClientTest {
         TournamentServerClient client = new TournamentServerClient("http://localhost:8080", mockTemplate);
         assertTrue(client.listTournaments().isEmpty());
     }
+    
+    @Test
+    void oneArgConstructorCreatesClient() {
+        TournamentServerClient client = new TournamentServerClient("http://localhost:8080");
+        assertDoesNotThrow(() -> client.toString()); // just ensure object constructed
+    }
 }

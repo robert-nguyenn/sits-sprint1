@@ -56,4 +56,10 @@ class HumanParticipantTest {
         assertEquals(PrisonerAction.DEFECT, action);
         assertDoesNotThrow(participant::reset);
     }
+    
+    @Test
+    void oneArgConstructorSetsName() {
+        HumanParticipant participant = new HumanParticipant("HumanOneArg");
+        assertEquals("HumanOneArg", participant.getName());
+    }
 }

@@ -1,11 +1,16 @@
 package sits;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
+import java.util.function.Function;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import sits.action.Action;
 import sits.action.PrisonerAction;
 import sits.game.IteratedPrisonersDilemma;
 import sits.participant.AlwaysCooperate;
@@ -114,20 +119,64 @@ class NetworkedTournamentTest {
         assertTrue(tournament.getParticipantsView().isEmpty());
     }
 
-        @Test
-        void constructorRejectsNullRequiredArguments() {
+    @Test
+    void constructorRejectsNullRequiredArguments() {
         RoundRobin format = new RoundRobin();
         IteratedPrisonersDilemma game = new IteratedPrisonersDilemma(1);
 
         assertThrows(NullPointerException.class,
-            () -> new NetworkedTournament(null, "name", format, game, PrisonerAction::valueOf));
+                () -> new NetworkedTournament(null, "name", format, game, PrisonerAction::valueOf));
         assertThrows(NullPointerException.class,
-            () -> new NetworkedTournament("id", null, format, game, PrisonerAction::valueOf));
+                () -> new NetworkedTournament("id", null, format, game, PrisonerAction::valueOf));
         assertThrows(NullPointerException.class,
-            () -> new NetworkedTournament("id", "name", null, game, PrisonerAction::valueOf));
+                () -> new NetworkedTournament("id", "name", null, game, PrisonerAction::valueOf));
         assertThrows(NullPointerException.class,
-            () -> new NetworkedTournament("id", "name", format, null, PrisonerAction::valueOf));
+                () -> new NetworkedTournament("id", "name", format, null, PrisonerAction::valueOf));
         assertThrows(NullPointerException.class,
-            () -> new NetworkedTournament("id", "name", format, game, null));
-        }
+                () -> new NetworkedTournament("id", "name", format, game, null));
+    }
+
+    @Test
+    void getNameReturnsConfiguredName() {
+        NetworkedTournament tournament = new NetworkedTournament(
+                "ipd-name",
+                "IPD Name Check",
+                new RoundRobin(),
+                new IteratedPrisonersDilemma(1),
+                PrisonerAction::valueOf
+        );
+
+        assertEquals("IPD Name Check", tournament.getName());
+    }
+
+    @Test
+    void addLocalParticipantThrowsWhenTournamentNotRegistering() {
+        NetworkedTournament tournament = new NetworkedTournament(
+                "ipd-locked",
+                "IPD Locked",
+                new RoundRobin(),
+                new IteratedPrisonersDilemma(1),
+                PrisonerAction::valueOf
+        );
+
+        tournament.addLocalParticipant(new AlwaysDefect());
+        tournament.addLocalParticipant(new AlwaysCooperate());
+        tournament.start();
+
+        assertThrows(IllegalStateException.class,
+                () -> tournament.addLocalParticipant(new AlwaysCooperate()));
+    }
+
+    @Test
+    void defaultActionFactoryReturnsLabelAction() {
+        NetworkedTournament tournament = new NetworkedTournament();
+
+        @SuppressWarnings("unchecked")
+        Function<String, Action> factory =
+                (Function<String, Action>) ReflectionTestUtils.getField(tournament, "actionFactory");
+
+        assertNotNull(factory);
+        Action action = factory.apply("CUSTOM_LABEL");
+        assertEquals("CUSTOM_LABEL", action.getLabel());
+    }
 }
