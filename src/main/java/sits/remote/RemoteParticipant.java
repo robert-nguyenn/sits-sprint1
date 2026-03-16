@@ -37,7 +37,7 @@ public class RemoteParticipant implements Participant {
     @Override
     public Action chooseAction(GameHistory history) {
         GameHistoryDTO dto = GameHistoryDTO.fromGameHistory(history);
-        
+
         String label = restTemplate.postForObject(
                 clientUrl + "/action",
                 dto,
