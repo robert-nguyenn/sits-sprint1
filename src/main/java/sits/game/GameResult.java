@@ -1,3 +1,7 @@
+// Final summary after match ends.
+// Contains total scores and winner.
+// No per-round details.
+
 package sits.game;
 
 public class GameResult {

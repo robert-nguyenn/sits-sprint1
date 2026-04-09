@@ -13,10 +13,12 @@ import sits.participant.TitForTat;
 import sits.tournament.RoundRobin;
 import sits.tournament.TournamentResult;
 
+// Tests for the round-robin tournament format end-to-end behavior.
 public class RoundRobinTest {
 
     @Test
     void roundRobin_runsAllMatches_andFiresTournamentOver() {
+        // Checks that all pairings run, observers get events, and scores/rankings are correct.
         IteratedPrisonersDilemma game = new IteratedPrisonersDilemma(1);
         FakeObserver observer = new FakeObserver();
         game.addObserver(observer);

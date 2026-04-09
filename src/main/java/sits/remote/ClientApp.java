@@ -1,3 +1,10 @@
+// ClientApp runs on the remote player machine.
+// RemoteParticipant runs on the tournament server side.
+// ClientApp exposes endpoints.
+// RemoteParticipant calls those endpoints.
+// So ClientApp is the actual remote app, while RemoteParticipant is the server’s proxy for that remote player.
+
+
 package sits.remote;
 
 import java.net.InetAddress;

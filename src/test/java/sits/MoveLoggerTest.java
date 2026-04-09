@@ -16,6 +16,7 @@ import sits.game.RoundResult;
 import sits.observer.MoveLogger;
 import sits.tournament.TournamentResult;
 
+// Tests for the logger that writes round-by-round move details to a file.
 public class MoveLoggerTest {
 
     @TempDir
@@ -23,6 +24,7 @@ public class MoveLoggerTest {
 
     @Test
     void moveLogger_writesSingleMoveLine() throws Exception {
+        // Checks that one move gets written in the expected text format.
         Path file = tempDir.resolve("moves.txt");
         MoveLogger logger = new MoveLogger(file.toString());
 
@@ -47,6 +49,7 @@ public class MoveLoggerTest {
 
     @Test
     void moveLogger_writesMultipleMoveLinesInOrder() throws Exception {
+        // Checks that multiple moves are written and kept in the right order.
         Path file = tempDir.resolve("moves_multi.txt");
         MoveLogger logger = new MoveLogger(file.toString());
 
@@ -87,6 +90,7 @@ public class MoveLoggerTest {
 
     @Test
     void onGameOver_doesNotWriteGameSummary() throws Exception {
+        // Checks that move logging does not suddenly write a game summary.
         Path file = tempDir.resolve("moves_no_game_summary.txt");
         MoveLogger logger = new MoveLogger(file.toString());
 
@@ -101,6 +105,7 @@ public class MoveLoggerTest {
 
     @Test
     void constructor_throwsWhenPathIsBad() {
+        // Checks that an invalid output path fails
         assertThrows(RuntimeException.class, () -> {
             new MoveLogger(".");
         });
@@ -108,6 +113,7 @@ public class MoveLoggerTest {
 
     @Test
     void onMoveMade_wrapsIOExceptionAsRuntimeException() {
+        // Checks that write errors get turned into a runtime exception.
         Path file = tempDir.resolve("moves_io_write.txt");
         MoveLogger logger = new MoveLogger(file.toString());
 
@@ -123,6 +129,7 @@ public class MoveLoggerTest {
 
     @Test
     void onTournamentOver_wrapsIOExceptionAsRuntimeExceptionWhenAlreadyClosed() {
+        // Checks that close errors are also wrapped as runtime exceptions.
         Path file = tempDir.resolve("moves_io_close.txt");
         MoveLogger logger = new MoveLogger(file.toString());
 

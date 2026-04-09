@@ -1,3 +1,4 @@
+// round result
 package sits.game;
 
 import sits.action.Action;

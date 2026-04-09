@@ -1,3 +1,9 @@
+// TournamentServerController is on the tournament server.
+// It receives HTTP requests like register/start/list tournaments.
+// TournamentServerClient is used by the remote app to send HTTP requests to that server.
+// So one receives requests, the other sends requests.
+
+
 package sits.remote;
 
 import java.util.Arrays;

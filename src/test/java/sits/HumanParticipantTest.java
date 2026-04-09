@@ -13,10 +13,12 @@ import sits.action.PrisonerAction;
 import sits.game.GameHistory;
 import sits.participant.HumanParticipant;
 
+// Tests for the human player that reads actions from a Scanner.
 class HumanParticipantTest {
 
     @Test
     void noInputFallsBackToCooperate() {
+        // Checks that empty input does not crash and defaults to cooperate.
         Scanner scanner = new Scanner(new ByteArrayInputStream(new byte[0]));
         HumanParticipant participant = new HumanParticipant("Human", scanner);
 
@@ -27,6 +29,7 @@ class HumanParticipantTest {
 
     @Test
     void acceptsFullWordLowercaseInput() {
+        // Checks that lowercase full-word input is accepted correctly.
         Scanner scanner = new Scanner(new ByteArrayInputStream("defect\n".getBytes(StandardCharsets.UTF_8)));
         HumanParticipant participant = new HumanParticipant("Human", scanner);
 
@@ -37,6 +40,7 @@ class HumanParticipantTest {
 
     @Test
     void acceptsCooperateInput() {
+        // Checks that the short C input works and the participant keeps its name.
         Scanner scanner = new Scanner(new ByteArrayInputStream("C\n".getBytes(StandardCharsets.UTF_8)));
         HumanParticipant participant = new HumanParticipant("Human", scanner);
 
@@ -48,6 +52,7 @@ class HumanParticipantTest {
 
     @Test
     void retriesAfterInvalidInputThenAcceptsDefect() {
+        // Checks that bad input is ignored and the player keeps asking until it gets a valid move.
         Scanner scanner = new Scanner(new ByteArrayInputStream("maybe\nD\n".getBytes(StandardCharsets.UTF_8)));
         HumanParticipant participant = new HumanParticipant("Human", scanner);
 
@@ -59,6 +64,7 @@ class HumanParticipantTest {
     
     @Test
     void oneArgConstructorSetsName() {
+        // Checks the simple constructor still stores the player's name.
         HumanParticipant participant = new HumanParticipant("HumanOneArg");
         assertEquals("HumanOneArg", participant.getName());
     }

@@ -1,3 +1,10 @@
+// IteratedPrisonersDilemma.java is the rule-set for one match.
+
+// doRound: gets both players’ actions, computes payoff, returns round result.
+// isOver: ends when rounds reach maxRounds.
+// computeFinalResult: sums scores and picks winner (or tie).
+// getPayoff: hardcoded PD matrix
+
 package sits.game;
 
 import sits.action.Action;

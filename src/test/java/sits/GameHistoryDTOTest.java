@@ -13,10 +13,12 @@ import sits.game.RoundResult;
 import sits.remote.dto.GameHistoryDTO;
 import sits.remote.dto.RoundResultDTO;
 
+// Tests for converting between the game history model and the DTO used for HTTP.
 class GameHistoryDTOTest {
 
     @Test
     void fromGameHistoryCopiesTransportFields() {
+        // Checks that a normal game history gets turned into DTO data correctly.
         GameHistory history = new GameHistory("P1", "P2");
         history.addRound(new RoundResult(PrisonerAction.COOPERATE, PrisonerAction.DEFECT, 0, 5, 1));
 
@@ -33,6 +35,7 @@ class GameHistoryDTOTest {
 
     @Test
     void toGameHistoryRebuildsActionLabelsAndRounds() {
+    // Checks that DTO data can be turned back into a usable game history.
         GameHistoryDTO dto = new GameHistoryDTO(
                 "A",
                 "B",
@@ -54,6 +57,7 @@ class GameHistoryDTOTest {
 
     @Test
     void toGameHistoryHandlesNullRoundList() {
+        // Checks that missing rounds do not break the conversion.
         GameHistoryDTO dto = new GameHistoryDTO();
         dto.setNameP1("P1");
         dto.setNameP2("P2");

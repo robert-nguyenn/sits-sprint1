@@ -6,10 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import sits.remote.RegistrationRequest;
 
+// Tests for the small data object sent when a remote player registers.
 class RegistrationRequestTest {
 
     @Test
     void defaultConstructorAndSettersWork() {
+        // Checks that the empty constructor plus setters store the values correctly.
         RegistrationRequest request = new RegistrationRequest();
         request.setName("RobotC");
         request.setIp("10.0.0.9");
@@ -22,6 +24,7 @@ class RegistrationRequestTest {
 
     @Test
     void storesRegistrationDetails() {
+        // Checks that the full constructor and later updates both work as expected.
         RegistrationRequest request = new RegistrationRequest("RobotA", "127.0.0.1", 8081);
 
         assertEquals("RobotA", request.getName());

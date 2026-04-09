@@ -9,10 +9,12 @@ import org.junit.jupiter.api.Test;
 
 import sits.tournament.TournamentResult;
 
+// Tests for score lookup, ranking order, and defensive-copy behavior.
 public class TournamentResultTest {
 
     @Test
     void getScore_returnsStoredValues() {
+    // Checks that stored scores are returned correctly.
         TournamentResult result = new TournamentResult(Map.of(
                 "Alice", 7,
                 "Bob", 3,
@@ -26,6 +28,7 @@ public class TournamentResultTest {
 
     @Test
     void getScore_returnsZeroForMissingName() {
+        // Checks that unknown names default to 0 instead of failing.
         TournamentResult result = new TournamentResult(Map.of(
                 "Alice", 7,
                 "Bob", 3
@@ -36,6 +39,7 @@ public class TournamentResultTest {
 
     @Test
     void getRankings_returnsHighestFirst() {
+        // Checks that rankings are sorted from highest score to lowest.
         TournamentResult result = new TournamentResult(Map.of(
                 "Alice", 7,
                 "Bob", 3,
@@ -51,6 +55,11 @@ public class TournamentResultTest {
 
     @Test
     void getScoresCopy_returnsDefensiveCopy() {
+        // Checks that editing the returned map does not change internal state.
+        //         getScoresCopy() should return a new map, not the real internal map.
+        // So when test code changes the returned map (copy.put("Alice", 999)), it should NOT change the real score inside TournamentResult.
+        // Final assert checks that:
+        // internal score is still 7, not 999.
         TournamentResult result = new TournamentResult(Map.of(
                 "Alice", 7,
                 "Bob", 3

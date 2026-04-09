@@ -4,7 +4,7 @@ public enum PrisonerAction implements Action {
     COOPERATE,
     DEFECT;
 
-    @Override
+    @Override 
     public String getLabel() {
         return name();
     }

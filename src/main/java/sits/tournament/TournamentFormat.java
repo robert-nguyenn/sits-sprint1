@@ -1,3 +1,7 @@
+// This is just a contract.
+// It says any tournament format must have:
+// run(List<Participant> participants, Game game)
+
 package sits.tournament;
 
 import java.util.List;

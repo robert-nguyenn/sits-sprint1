@@ -13,6 +13,7 @@ import sits.game.GameResult;
 import sits.observer.ScoreLogger;
 import sits.tournament.TournamentResult;
 
+// Tests for the logger that writes game summaries and tournament rankings.
 public class ScoreLoggerTest {
 
     @TempDir
@@ -20,6 +21,7 @@ public class ScoreLoggerTest {
 
     @Test
     void scoreLogger_writesGameOverAndTournamentResults() throws Exception {
+        // Checks that both game-over lines and final rankings are written.
         Path file = tempDir.resolve("scores.txt");
         ScoreLogger logger = new ScoreLogger(file.toString());
 
@@ -42,6 +44,7 @@ public class ScoreLoggerTest {
 
     @Test
     void scoreLogger_writesMultipleGameResults() throws Exception {
+        // Checks that multiple game summaries are all kept in the output.
         Path file = tempDir.resolve("scores_multi.txt");
         ScoreLogger logger = new ScoreLogger(file.toString());
 
@@ -62,6 +65,7 @@ public class ScoreLoggerTest {
 
     @Test
     void onMoveMade_doesNotWriteMoveLines() throws Exception {
+        // Checks that score logging ignores move-by-move events.
         Path file = tempDir.resolve("scores_no_moves.txt");
         ScoreLogger logger = new ScoreLogger(file.toString());
 
@@ -76,6 +80,7 @@ public class ScoreLoggerTest {
 
     @Test
     void constructor_throwsWhenPathIsBad() {
+        // Checks that an invalid output path fails fast.
         assertThrows(RuntimeException.class, () -> {
             new ScoreLogger(".");
         });
@@ -83,6 +88,7 @@ public class ScoreLoggerTest {
 
     @Test
     void onGameOver_wrapsIOExceptionAsRuntimeException() {
+        // Checks that write errors are wrapped as runtime exceptions.
         Path file = tempDir.resolve("scores_io_write.txt");
         ScoreLogger logger = new ScoreLogger(file.toString());
 
@@ -95,6 +101,7 @@ public class ScoreLoggerTest {
 
     @Test
     void onTournamentOver_wrapsIOExceptionAsRuntimeExceptionWhenAlreadyClosed() {
+        // Checks that close errors are also wrapped as runtime exceptions.
         Path file = tempDir.resolve("scores_io_close.txt");
         ScoreLogger logger = new ScoreLogger(file.toString());
 

@@ -24,10 +24,12 @@ import org.springframework.web.client.RestTemplate;
 import sits.remote.NetworkedTournament;
 import sits.remote.TournamentServerClient;
 
+// Tests for the HTTP client that talks to the tournament server.
 class TournamentServerClientTest {
 
     @Test
     void listTournamentsParsesServerResponse() {
+        // Checks that JSON response from /tournaments is parsed into objects correctly.
         RestTemplate restTemplate = new RestTemplate();
         MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 
@@ -49,6 +51,7 @@ class TournamentServerClientTest {
 
     @Test
     void registerAndStartCallExpectedEndpoints() {
+        // Checks that register/start send POST requests to the expected endpoints.
         RestTemplate restTemplate = new RestTemplate();
         MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 
@@ -71,6 +74,7 @@ class TournamentServerClientTest {
 
     @Test
     void listTournamentsReturnsEmptyWhenResponseBodyIsNull() {
+        // Checks null response body is handled safely as an empty list.
         RestTemplate mockTemplate = mock(RestTemplate.class);
         when(mockTemplate.exchange(
                 eq("http://localhost:8080/tournaments"),
@@ -85,6 +89,7 @@ class TournamentServerClientTest {
     
     @Test
     void oneArgConstructorCreatesClient() {
+        // Checks the convenience constructor creates a usable instance.
         TournamentServerClient client = new TournamentServerClient("http://localhost:8080");
         assertDoesNotThrow(() -> client.toString()); // just ensure object constructed
     }

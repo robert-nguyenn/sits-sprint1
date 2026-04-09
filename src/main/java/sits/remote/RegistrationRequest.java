@@ -1,3 +1,10 @@
+// RegistrationRequest is just the data object sent when a remote player registers.
+// It contains name, IP, and port.
+// TournamentRegistry is the server’s in-memory storage of tournaments.
+// It keeps track of tournaments currently known to the server.
+// So one is request data, the other is server storage.
+
+
 package sits.remote;
 
 public class RegistrationRequest {

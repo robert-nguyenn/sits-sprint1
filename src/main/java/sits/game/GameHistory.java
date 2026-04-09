@@ -1,3 +1,8 @@
+// Full timeline of a match.
+// Contains every round (List<RoundResult>), plus player names.
+// Used during play for strategy decisions and observers.
+
+
 package sits.game;
 
 import java.util.ArrayList;

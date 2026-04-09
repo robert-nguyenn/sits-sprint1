@@ -1,3 +1,8 @@
+// ParticipantController is inside the remote app.
+// It exposes the participant’s name, action, and reset over HTTP.
+// RemoteParticipant is on the server and calls those endpoints.
+// So ParticipantController is the HTTP face of the real participant.
+
 package sits.remote;
 
 import org.springframework.web.bind.annotation.GetMapping;

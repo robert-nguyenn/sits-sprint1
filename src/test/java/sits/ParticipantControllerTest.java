@@ -12,10 +12,12 @@ import sits.remote.ParticipantController;
 import sits.remote.dto.GameHistoryDTO;
 import sits.remote.dto.RoundResultDTO;
 
+// Tests for the HTTP controller that exposes a participant over the network.
 class ParticipantControllerTest {
 
     @Test
     void delegatesToHostedParticipant() {
+        // Checks that the controller forwards calls to the participant it wraps.
         ParticipantController controller = new ParticipantController(new AlwaysDefect());
 
         GameHistoryDTO dto = new GameHistoryDTO(

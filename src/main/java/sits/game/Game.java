@@ -1,3 +1,11 @@
+// Game.java is the base engine for playing one match between two participants.
+
+// What it handles:
+
+// observer management (addObserver, removeObserver)
+// notifying events (onMoveMade, onGameOver, onTournamentOver)
+// the fixed match loop in play(...)
+
 package sits.game;
 
 import java.util.ArrayList;
@@ -58,7 +66,6 @@ public abstract class Game {
         return result;
     }
 
-    // Hooks
     protected abstract RoundResult doRound(Participant p1, Participant p2, GameHistory history, int roundNum);
 
     protected abstract boolean isOver(GameHistory history);

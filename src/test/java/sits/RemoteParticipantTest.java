@@ -19,10 +19,16 @@ import sits.action.PrisonerAction;
 import sits.game.GameHistory;
 import sits.remote.RemoteParticipant;
 
+// Tests for the proxy object that calls a remote participant's HTTP endpoints.
 class RemoteParticipantTest {
 
     @Test
     void getNameDoesNotRequireNetworkCall() {
+        // Checks that the name is stored locally and doesn't trigger an HTTP call.
+
+        //When the tournament server creates a RemoteParticipant, it already has the player's name (it came from the registration request sent by the remote client). So the server passes the name into the constructor and stores it as a field.
+
+        //Since the name never changes during the tournament, there's no reason to make an HTTP round-trip to the remote machine just to ask "what's your name?" — we already know it.
         RestTemplate restTemplate = new RestTemplate();
         RemoteParticipant remote = new RemoteParticipant(
                 "RemoteOne",
@@ -36,6 +42,7 @@ class RemoteParticipantTest {
 
     @Test
     void chooseActionPerformsRoundTripAndMapsLabel() {
+        // Checks that chooseAction sends the game history and gets back a valid action.
         RestTemplate restTemplate = new RestTemplate();
         MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 
@@ -58,6 +65,7 @@ class RemoteParticipantTest {
 
     @Test
     void resetCallsRemoteResetEndpoint() {
+        // Checks that reset sends an HTTP POST to the remote endpoint.
         RestTemplate restTemplate = new RestTemplate();
         MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 
@@ -78,6 +86,7 @@ class RemoteParticipantTest {
 
     @Test
     void chooseActionThrowsWhenRemoteReturnsNullLabel() {
+        // Checks that a missing response triggers an exception.
         RestTemplate restTemplate = new RestTemplate();
         MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 
@@ -98,6 +107,7 @@ class RemoteParticipantTest {
 
     @Test
     void resetThrowsWhenRemoteReturnsNon2xx() {
+        // Checks that a non-200 status code triggers an exception.
         RestTemplate restTemplate = new RestTemplate() {
             @Override
             public <T> ResponseEntity<T> postForEntity(String url, Object request, Class<T> responseType, Object... uriVariables) {

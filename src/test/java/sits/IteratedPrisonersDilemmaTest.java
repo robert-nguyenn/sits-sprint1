@@ -11,10 +11,12 @@ import sits.participant.AlwaysCooperate;
 import sits.participant.AlwaysDefect;
 import sits.participant.Participant;
 
+// Tests for the Prisoner's Dilemma game rules and scoring.
 public class IteratedPrisonersDilemmaTest {
 
     @Test
     void cooperateVsCooperate_scoresAreCorrect() {
+        // Checks the normal mutual-cooperation payoff.
         IteratedPrisonersDilemma game = new IteratedPrisonersDilemma(5);
 
         var result = game.play(new AlwaysCooperate(), new AlwaysCooperate());
@@ -26,6 +28,7 @@ public class IteratedPrisonersDilemmaTest {
 
     @Test
     void cooperateVsDefect_scoresAreCorrect() {
+        // Checks the case where player 1 cooperates and player 2 defects.
         IteratedPrisonersDilemma game = new IteratedPrisonersDilemma(4);
 
         var result = game.play(new AlwaysCooperate(), new AlwaysDefect());
@@ -37,6 +40,7 @@ public class IteratedPrisonersDilemmaTest {
 
     @Test
     void defectVsCooperate_scoresAreCorrect() {
+        // Checks the mirrored case where player 1 defects and player 2 cooperates.
         IteratedPrisonersDilemma game = new IteratedPrisonersDilemma(4);
 
         var result = game.play(new AlwaysDefect(), new AlwaysCooperate());
@@ -48,6 +52,7 @@ public class IteratedPrisonersDilemmaTest {
 
     @Test
     void defectVsDefect_scoresAreCorrect() {
+        // Checks the mutual-defection payoff.
         IteratedPrisonersDilemma game = new IteratedPrisonersDilemma(3);
 
         var result = game.play(new AlwaysDefect(), new AlwaysDefect());
@@ -59,12 +64,14 @@ public class IteratedPrisonersDilemmaTest {
 
     @Test
     void constructor_rejectsZeroOrNegativeRounds() {
+        // Checks that the game refuses invalid round counts.
         assertThrows(IllegalArgumentException.class, () -> new IteratedPrisonersDilemma(0));
         assertThrows(IllegalArgumentException.class, () -> new IteratedPrisonersDilemma(-2));
     }
 
     @Test
     void badActionType_throwsException() {
+        // Checks that the game rejects actions it does not understand.
         Participant badParticipant = new Participant() {
             @Override
             public String getName() {

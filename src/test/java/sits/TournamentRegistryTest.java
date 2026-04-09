@@ -12,10 +12,12 @@ import sits.remote.NetworkedTournament;
 import sits.remote.TournamentRegistry;
 import sits.tournament.RoundRobin;
 
+// Tests for registry behavior when tournaments are in different lifecycle states  (for example REGISTERING and COMPLETED).
 class TournamentRegistryTest {
 
     @Test
     void listsOnlyTournamentsInRegistrationPhase() {
+    // Checks that only REGISTERING tournaments are returned by listRegistering(). Because this method is specifically for listing tournaments that are still open for joining.
         NetworkedTournament openTournament = new NetworkedTournament(
                 "open",
                 "Open",

@@ -6,10 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import sits.remote.dto.RoundResultDTO;
 
+// Tests for the round-result DTO used in remote payloads.
 class RoundResultDTOTest {
 
     @Test
     void defaultConstructorAndSettersWork() {
+        // Checks that the empty constructor + setters store values correctly.
         RoundResultDTO dto = new RoundResultDTO();
 
         dto.setActionP1("COOPERATE");
@@ -25,6 +27,7 @@ class RoundResultDTOTest {
 
     @Test
     void constructorAndAccessorsWork() {
+        // Checks that the full constructor and getters work, and fields can still be updated.
         RoundResultDTO dto = new RoundResultDTO("COOPERATE", "DEFECT", 0, 5);
 
         assertEquals("COOPERATE", dto.getActionP1());

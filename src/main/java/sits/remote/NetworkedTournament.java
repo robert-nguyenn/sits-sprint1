@@ -1,3 +1,14 @@
+// NetworkedTournament is the tournament manager on the server side.
+
+// It sits in the middle of the server and players:
+
+// It stores the tournament info: id, name, status
+// It holds the players list
+// It can add local players directly
+// It can add remote players by creating RemoteParticipant
+// It starts the tournament and runs the chosen format
+
+
 package sits.remote;
 
 import java.util.ArrayList;

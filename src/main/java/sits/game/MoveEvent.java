@@ -1,3 +1,11 @@
+// is a small event object sent to observers after each round.
+
+// It carries:
+
+// the latest RoundResult
+// the current GameHistory
+
+
 package sits.game;
 
 public class MoveEvent {

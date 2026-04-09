@@ -1,3 +1,13 @@
+// RoundResultDTO.java is the network/JSON version of one round result.
+
+// Stores action labels as strings (p1 and p2).
+// Stores round payoffs/scores.
+// Used inside GameHistoryDTO.java for HTTP transfer.
+// So: RoundResult = internal game object, RoundResultDTO = transport object.
+
+
+
+
 package sits.remote.dto;
 
 public class RoundResultDTO {

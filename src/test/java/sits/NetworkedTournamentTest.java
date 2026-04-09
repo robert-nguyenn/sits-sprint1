@@ -20,10 +20,12 @@ import sits.remote.RegistrationRequest;
 import sits.remote.TournamentStatus;
 import sits.tournament.RoundRobin;
 
+// Tests for lifecycle, registration rules, and safety checks in NetworkedTournament.
 class NetworkedTournamentTest {
 
     @Test
     void defaultConstructorStartsInRegisteringState() {
+                // Checks default setup starts open for registration with zero participants.
         NetworkedTournament tournament = new NetworkedTournament();
 
         assertEquals(TournamentStatus.REGISTERING, tournament.getStatus());
@@ -32,6 +34,7 @@ class NetworkedTournamentTest {
 
     @Test
     void canAddLocalAndRemoteParticipantsDuringRegistration() {
+                // Checks both local and remote participants can join during REGISTERING state.
         NetworkedTournament tournament = new NetworkedTournament(
                 "ipd-1",
                 "IPD Open",
@@ -50,6 +53,7 @@ class NetworkedTournamentTest {
 
     @Test
     void startTransitionsLifecycleAndReturnsResult() {
+                // Checks start() runs the tournament and moves status to COMPLETED.
         NetworkedTournament tournament = new NetworkedTournament(
                 "ipd-2",
                 "IPD Duel",
@@ -70,6 +74,7 @@ class NetworkedTournamentTest {
 
     @Test
     void cannotRegisterAfterTournamentStarts() {
+                // Checks late registration and second start call are rejected.
         NetworkedTournament tournament = new NetworkedTournament(
                 "ipd-3",
                 "IPD Closed",
@@ -92,6 +97,7 @@ class NetworkedTournamentTest {
 
     @Test
     void participantsViewIsUnmodifiable() {
+                // Checks external code cannot mutate the participants view directly.
         NetworkedTournament tournament = new NetworkedTournament(
                 "ipd-4",
                 "IPD",
@@ -107,6 +113,7 @@ class NetworkedTournamentTest {
 
     @Test
     void addLocalParticipantRejectsNull() {
+                // Checks null participant input is rejected.
         NetworkedTournament tournament = new NetworkedTournament(
                 "ipd-5",
                 "IPD",
@@ -121,6 +128,7 @@ class NetworkedTournamentTest {
 
     @Test
     void constructorRejectsNullRequiredArguments() {
+                // Checks required constructor arguments are validated.
         RoundRobin format = new RoundRobin();
         IteratedPrisonersDilemma game = new IteratedPrisonersDilemma(1);
 
@@ -138,6 +146,7 @@ class NetworkedTournamentTest {
 
     @Test
     void getNameReturnsConfiguredName() {
+                // Checks configured tournament name is returned unchanged.
         NetworkedTournament tournament = new NetworkedTournament(
                 "ipd-name",
                 "IPD Name Check",
@@ -151,6 +160,7 @@ class NetworkedTournamentTest {
 
     @Test
     void addLocalParticipantThrowsWhenTournamentNotRegistering() {
+                // Checks local participant add is blocked once tournament has started.
         NetworkedTournament tournament = new NetworkedTournament(
                 "ipd-locked",
                 "IPD Locked",
@@ -169,6 +179,7 @@ class NetworkedTournamentTest {
 
     @Test
     void defaultActionFactoryReturnsLabelAction() {
+                // Checks default action factory builds simple label-based actions.
         NetworkedTournament tournament = new NetworkedTournament();
 
         @SuppressWarnings("unchecked")

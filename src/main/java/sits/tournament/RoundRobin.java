@@ -1,3 +1,8 @@
+// This is one actual tournament format.
+// Round-robin means:
+// every participant plays every other participant once
+
+
 package sits.tournament;
 
 import java.util.HashMap;

@@ -1,3 +1,11 @@
+// TournamentResult.java stores final tournament scores.
+
+// Holds Map<String, Integer> of player -> total score.
+// getScore(name): returns that player’s score (0 if missing).
+// getRankings(): returns player names sorted highest score first.
+// getScoresCopy(): returns a safe copy of all scores.
+
+
 package sits.tournament;
 
 import java.util.ArrayList;

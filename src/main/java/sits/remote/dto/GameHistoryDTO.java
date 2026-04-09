@@ -1,3 +1,10 @@
+// GameHistoryDTO.java is the network/JSON version of GameHistory.
+
+// Contains player names + list of RoundResultDTO.
+// fromGameHistory(...): converts internal GameHistory -> DTO for sending over HTTP.
+// toGameHistory(): converts DTO back -> internal GameHistory for game logic.
+// So it is a translator object between domain model and remote payload.
+
 package sits.remote.dto;
 
 import java.util.ArrayList;
@@ -44,7 +51,7 @@ public class GameHistoryDTO {
             return history;
         }
 
-        int roundNumber = 1;
+        int roundNumber = 1;    
         for (RoundResultDTO r : rounds) {
             history.addRound(new RoundResult(
                     new StringAction(r.getActionP1()),

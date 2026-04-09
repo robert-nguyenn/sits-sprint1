@@ -8,10 +8,12 @@ import sits.action.PrisonerAction;
 import sits.game.GameHistory;
 import sits.game.RoundResult;
 
+// Tests for the game history object that stores rounds and player names.
 public class GameHistoryTest {
 
     @Test
     void getLastRound_throwsWhenEmpty() {
+        // Checks that asking for the last round before any rounds exist fails fast.
         GameHistory history = new GameHistory("P1", "P2");
 
         assertThrows(IllegalStateException.class, history::getLastRound);
@@ -19,6 +21,7 @@ public class GameHistoryTest {
 
     @Test
     void addRound_andGetLastRound_work() {
+        // Checks that rounds are stored in order and the latest one can be read back.
         GameHistory history = new GameHistory("P1", "P2");
 
         RoundResult first = new RoundResult(
@@ -48,6 +51,7 @@ public class GameHistoryTest {
 
     @Test
     void getRounds_returnsUnmodifiableList() {
+        // Checks that callers can read the round list but cannot change it directly.
         GameHistory history = new GameHistory("P1", "P2");
 
         assertThrows(UnsupportedOperationException.class, () -> {
