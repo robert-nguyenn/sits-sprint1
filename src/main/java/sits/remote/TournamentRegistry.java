@@ -34,4 +34,17 @@ public class TournamentRegistry {
 
         return open;
     }
+
+    public List<NetworkedTournament> listViewable() {
+        List<NetworkedTournament> viewable = new ArrayList<>();
+
+        for (NetworkedTournament tournament : tournaments.values()) {
+            TournamentStatus status = tournament.getStatus();
+            if (status == TournamentStatus.REGISTERING || status == TournamentStatus.RUNNING) {
+                viewable.add(tournament);
+            }
+        }
+
+        return viewable;
+    }
 }

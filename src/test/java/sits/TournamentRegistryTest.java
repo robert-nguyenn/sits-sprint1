@@ -10,14 +10,13 @@ import sits.participant.AlwaysCooperate;
 import sits.participant.AlwaysDefect;
 import sits.remote.NetworkedTournament;
 import sits.remote.TournamentRegistry;
+import sits.remote.TournamentStatus;
 import sits.tournament.RoundRobin;
 
-// Tests for registry behavior when tournaments are in different lifecycle states  (for example REGISTERING and COMPLETED).
 class TournamentRegistryTest {
 
     @Test
     void listsOnlyTournamentsInRegistrationPhase() {
-    // Checks that only REGISTERING tournaments are returned by listRegistering(). Because this method is specifically for listing tournaments that are still open for joining.
         NetworkedTournament openTournament = new NetworkedTournament(
                 "open",
                 "Open",
@@ -45,4 +44,49 @@ class TournamentRegistryTest {
         assertEquals("open", registry.listRegistering().get(0).getId());
         assertEquals(openTournament, registry.get("open"));
     }
+
+        @Test
+        void listViewableIncludesRegisteringAndRunningOnly() {
+        NetworkedTournament registeringTournament = new NetworkedTournament(
+            "reg",
+            "Registering",
+            new RoundRobin(),
+            new IteratedPrisonersDilemma(1),
+            PrisonerAction::valueOf
+        );
+
+        NetworkedTournament runningTournament = new NetworkedTournament(
+            "run",
+            "Running",
+            new RoundRobin(),
+            new IteratedPrisonersDilemma(1),
+            PrisonerAction::valueOf
+        );
+        org.springframework.test.util.ReflectionTestUtils.setField(
+            runningTournament,
+            "status",
+            TournamentStatus.RUNNING
+        );
+
+        NetworkedTournament completedTournament = new NetworkedTournament(
+            "done2",
+            "Done",
+            new RoundRobin(),
+            new IteratedPrisonersDilemma(1),
+            PrisonerAction::valueOf
+        );
+        org.springframework.test.util.ReflectionTestUtils.setField(
+            completedTournament,
+            "status",
+            TournamentStatus.COMPLETED
+        );
+
+        TournamentRegistry registry = new TournamentRegistry();
+        registry.add(registeringTournament);
+        registry.add(runningTournament);
+        registry.add(completedTournament);
+
+        var viewable = registry.listViewable();
+        assertEquals(2, viewable.size());
+        }
 }

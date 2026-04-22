@@ -6,8 +6,11 @@
 package sits.remote;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,22 +18,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import sits.tournament.TournamentResult;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @RequestMapping("/tournaments")
 public class TournamentServerController {
 
     private final TournamentRegistry registry;
+    private final ExecutorService executor;
 
     public TournamentServerController(TournamentRegistry registry) {
         this.registry = registry;
+        this.executor = Executors.newFixedThreadPool(10);
     }
 
     @GetMapping
     public List<NetworkedTournament> getTournaments() {
-        return registry.listRegistering();
+        return registry.listViewable();
     }
 
     @PostMapping("/{id}/register")
@@ -49,16 +53,34 @@ public class TournamentServerController {
     }
 
     @PostMapping("/{id}/start")
-    public ResponseEntity<TournamentResult> start(@PathVariable String id) {
+    public ResponseEntity<Void> start(@PathVariable String id) {
         NetworkedTournament tournament = registry.get(id);
         if (tournament == null) {
             return ResponseEntity.notFound().build();
         }
 
+        if (tournament.getStatus() != TournamentStatus.REGISTERING) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         try {
-            return ResponseEntity.ok(tournament.start());
+            executor.submit(tournament::start);
+            return ResponseEntity.accepted().build();
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+    }
+
+    @GetMapping(path = "/{id}/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter streamMoves(@PathVariable String id) {
+        NetworkedTournament tournament = registry.get(id);
+        if (tournament == null) {
+            throw new IllegalArgumentException("Tournament not found: " + id);
+        }
+
+        SseEmitter emitter = new SseEmitter(60000L);
+        tournament.getBroadcaster().addEmitter(emitter);
+
+        return emitter;
     }
 }

@@ -1,9 +1,9 @@
 package sits;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.Objects;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
@@ -23,7 +23,6 @@ import sits.remote.NetworkedTournament;
 import sits.remote.RegistrationRequest;
 import sits.remote.TournamentRegistry;
 import sits.remote.TournamentServerController;
-import sits.remote.TournamentStatus;
 import sits.tournament.RoundRobin;
 
 @SpringBootTest(
@@ -65,8 +64,9 @@ class TournamentServerHttpTest {
                 String.class
         );
 
-        assertEquals(200, startResponse.getStatusCode().value());
-        assertEquals(TournamentStatus.COMPLETED, registry.get("ipd-start").getStatus());
+        // Start returns 202 Accepted and runs async in background
+        assertEquals(202, startResponse.getStatusCode().value());
+        // Tournament status may still be RUNNING or COMPLETED depending on timing
     }
 
     @SpringBootConfiguration

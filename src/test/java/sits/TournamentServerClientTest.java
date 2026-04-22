@@ -4,32 +4,26 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
+import org.springframework.test.web.client.MockRestServiceServer;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
-import sits.remote.NetworkedTournament;
 import sits.remote.TournamentServerClient;
 
-// Tests for the HTTP client that talks to the tournament server.
 class TournamentServerClientTest {
 
     @Test
     void listTournamentsParsesServerResponse() {
-        // Checks that JSON response from /tournaments is parsed into objects correctly.
         RestTemplate restTemplate = new RestTemplate();
         MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 
@@ -51,7 +45,6 @@ class TournamentServerClientTest {
 
     @Test
     void registerAndStartCallExpectedEndpoints() {
-        // Checks that register/start send POST requests to the expected endpoints.
         RestTemplate restTemplate = new RestTemplate();
         MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 
@@ -74,22 +67,21 @@ class TournamentServerClientTest {
 
     @Test
     void listTournamentsReturnsEmptyWhenResponseBodyIsNull() {
-        // Checks null response body is handled safely as an empty list.
-        RestTemplate mockTemplate = mock(RestTemplate.class);
-        when(mockTemplate.exchange(
-                eq("http://localhost:8080/tournaments"),
-                eq(HttpMethod.GET),
-                isNull(),
-                eq(NetworkedTournament[].class)
-        )).thenReturn(new ResponseEntity<>(null, HttpStatus.OK));
+        // anonymous subclass: Mockito can't instrument RestTemplate on Java 26
+        RestTemplate nullBodyTemplate = new RestTemplate() {
+            @Override
+            public <T> ResponseEntity<T> exchange(String url, HttpMethod method,
+                    HttpEntity<?> requestEntity, Class<T> responseType, Object... uriVariables) {
+                return new ResponseEntity<>(null, HttpStatus.OK);
+            }
+        };
 
-        TournamentServerClient client = new TournamentServerClient("http://localhost:8080", mockTemplate);
+        TournamentServerClient client = new TournamentServerClient("http://localhost:8080", nullBodyTemplate);
         assertTrue(client.listTournaments().isEmpty());
     }
     
     @Test
     void oneArgConstructorCreatesClient() {
-        // Checks the convenience constructor creates a usable instance.
         TournamentServerClient client = new TournamentServerClient("http://localhost:8080");
         assertDoesNotThrow(() -> client.toString()); // just ensure object constructed
     }

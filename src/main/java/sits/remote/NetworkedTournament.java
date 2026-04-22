@@ -1,14 +1,3 @@
-// NetworkedTournament is the tournament manager on the server side.
-
-// It sits in the middle of the server and players:
-
-// It stores the tournament info: id, name, status
-// It holds the players list
-// It can add local players directly
-// It can add remote players by creating RemoteParticipant
-// It starts the tournament and runs the chosen format
-
-
 package sits.remote;
 
 import java.util.ArrayList;
@@ -21,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import sits.action.Action;
 import sits.game.Game;
+import sits.observer.ViewerBroadcaster;
 import sits.participant.Participant;
 import sits.tournament.TournamentFormat;
 import sits.tournament.TournamentResult;
@@ -44,10 +34,18 @@ public class NetworkedTournament {
     @JsonIgnore
     private Function<String, Action> actionFactory;
 
+    @JsonIgnore
+    private ViewerBroadcaster broadcaster;
+
+    @JsonIgnore
+    private long delayMs;
+
     public NetworkedTournament() {
         this.participants = new ArrayList<>();
         this.status = TournamentStatus.REGISTERING;
         this.actionFactory = label -> () -> label;
+        this.delayMs = 0;
+        this.broadcaster = new ViewerBroadcaster(delayMs);
     }
 
     public NetworkedTournament(String id, String name, TournamentFormat format, Game game, Function<String, Action> actionFactory) {
@@ -58,6 +56,8 @@ public class NetworkedTournament {
         this.actionFactory = Objects.requireNonNull(actionFactory, "actionFactory");
         this.participants = new ArrayList<>();
         this.status = TournamentStatus.REGISTERING;
+        this.delayMs = 0;
+        this.broadcaster = new ViewerBroadcaster(delayMs);
     }
 
     public String getId() {
@@ -94,6 +94,8 @@ public class NetworkedTournament {
         }
 
         status = TournamentStatus.RUNNING;
+        game.addObserver(broadcaster);
+        
         TournamentResult result = format.run(participants, game);
         status = TournamentStatus.COMPLETED;
         return result;
@@ -105,5 +107,18 @@ public class NetworkedTournament {
 
     public List<Participant> getParticipantsView() {
         return Collections.unmodifiableList(participants);
+    }
+
+    public ViewerBroadcaster getBroadcaster() {
+        return broadcaster;
+    }
+
+    public void setDelayMs(long delayMs) {
+        this.delayMs = delayMs;
+        this.broadcaster = new ViewerBroadcaster(delayMs);
+    }
+
+    public long getDelayMs() {
+        return delayMs;
     }
 }
