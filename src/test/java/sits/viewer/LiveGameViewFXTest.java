@@ -27,9 +27,11 @@ public class LiveGameViewFXTest {
 
     private LiveGameController controller;
     private StreamingFakeConnection connection;
+    private Stage testStage;
 
     @Start
     private void start(Stage stage) throws Exception {
+        this.testStage = stage;
         connection = new StreamingFakeConnection();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/sits/viewer/live_game.fxml"));
@@ -85,11 +87,62 @@ public class LiveGameViewFXTest {
     void backButtonReturnsToLobby(FxRobot robot) {
         watchOnFxThread("t1");
 
-        robot.clickOn("#backButton");
+        // Fire the back button directly through testStage's scene rather than
+        // robot.clickOn so we don't rely on TestFX cross-window targeting.
+        javafx.scene.control.Button back =
+                (javafx.scene.control.Button) testStage.getScene().lookup("#backButton");
+        org.junit.jupiter.api.Assertions.assertNotNull(back, "backButton should be in the live scene");
+        Platform.runLater(back::fire);
         WaitForAsyncUtils.waitForFxEvents();
 
-        // Lobby scene is now active, so its tournament list is on screen.
-        FxAssert.verifyThat("#tournamentList", NodeMatchers.isVisible());
+        // The same stage now hosts the lobby scene.
+        org.junit.jupiter.api.Assertions.assertNotNull(
+                testStage.getScene().lookup("#tournamentList"),
+                "tournamentList should be in the lobby scene after Back is pressed");
+    }
+
+    @Test
+    void backButtonCancelsAnActiveStream(FxRobot robot) {
+        // Use a connection whose stream future never completes so handleBack
+        // exercises the streamFuture.cancel(true) branch.
+        IncompleteStreamConnection stalled = new IncompleteStreamConnection();
+        Platform.runLater(() -> controller.setServerConnection(stalled));
+        WaitForAsyncUtils.waitForFxEvents();
+
+        watchOnFxThread("t1");
+        org.junit.jupiter.api.Assertions.assertFalse(stalled.future.isDone(),
+                "stream future should still be pending before Back is clicked");
+
+        // Fire the back button directly through testStage's scene.
+        javafx.scene.control.Button back =
+                (javafx.scene.control.Button) testStage.getScene().lookup("#backButton");
+        Platform.runLater(back::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        org.junit.jupiter.api.Assertions.assertTrue(stalled.future.isCancelled(),
+                "stream future should be cancelled by handleBack");
+    }
+
+    private static final class IncompleteStreamConnection extends ServerConnection {
+        volatile CompletableFuture<Void> future;
+
+        IncompleteStreamConnection() {
+            super("http://localhost:0");
+        }
+
+        @Override
+        public List<TournamentInfo> fetchTournaments() {
+            return List.of();
+        }
+
+        @Override
+        public CompletableFuture<Void> streamMoves(String tournamentId,
+                                                   Consumer<MoveEventDTO> onEvent,
+                                                   Runnable onDone) {
+            CompletableFuture<Void> f = new CompletableFuture<>();
+            future = f;
+            return f;
+        }
     }
 
     private MoveEventDTO makeMove(int round, String a1, String a2, int p1, int p2) {

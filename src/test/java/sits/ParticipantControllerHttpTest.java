@@ -73,6 +73,27 @@ class ParticipantControllerHttpTest {
     }
 
     @Test
+    void testParticipant_helperReportsExpectedName() {
+        TestParticipant fresh = new TestParticipant();
+        assertEquals("FlipParticipant", fresh.getName());
+    }
+
+    @Test
+    void testParticipant_cooperatesOnEmptyHistory() {
+        TestParticipant fresh = new TestParticipant();
+        Action action = fresh.chooseAction(new GameHistory("A", "B"));
+        assertEquals(PrisonerAction.COOPERATE, action);
+    }
+
+    @Test
+    void testParticipant_resetFlagFlipsAfterReset() {
+        TestParticipant fresh = new TestParticipant();
+        assertFalse(fresh.isResetCalled());
+        fresh.reset();
+        assertTrue(fresh.isResetCalled());
+    }
+
+    @Test
     void remoteParticipant_callsLiveHttpEndpoint() {
         String baseUrl = "http://localhost:" + port;
         RemoteParticipant remote = new RemoteParticipant(
