@@ -78,7 +78,7 @@ public class TournamentServerController {
             throw new IllegalArgumentException("Tournament not found: " + id);
         }
 
-        SseEmitter emitter = new SseEmitter(60000L);
+        SseEmitter emitter = new SseEmitter(600000L);
         tournament.getBroadcaster().addEmitter(emitter);
 
         return emitter;
