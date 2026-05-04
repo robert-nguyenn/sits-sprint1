@@ -95,10 +95,15 @@ public class NetworkedTournament {
 
         status = TournamentStatus.RUNNING;
         game.addObserver(broadcaster);
-        
-        TournamentResult result = format.run(participants, game);
-        status = TournamentStatus.COMPLETED;
-        return result;
+
+        // try-finally so a failed remote call (e.g. a stale participant whose
+        // client process died) still flips status to COMPLETED instead of
+        // leaving the tournament stuck in RUNNING forever.
+        try {
+            return format.run(participants, game);
+        } finally {
+            status = TournamentStatus.COMPLETED;
+        }
     }
 
     public int getParticipantCount() {
