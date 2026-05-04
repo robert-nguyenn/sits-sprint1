@@ -11,6 +11,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
+		<!-- Default main class. Override on the command line with -Dsits.main=sits.server.ServerApp -->
+		<sits.main>sits.remote.ClientApp</sits.main>
 	</properties>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -97,6 +99,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>${sits.main}</mainClass>
+				</configuration>
 			</plugin>
 			<plugin>
 	            <groupId>org.jacoco</groupId>
