@@ -28,7 +28,7 @@ public class ServerApp {
                 "ipd-1",
                 "Demo IPD Tournament",
                 new RoundRobin(),
-                new IteratedPrisonersDilemma(100),
+                new IteratedPrisonersDilemma(50),
                 PrisonerAction::valueOf
         );
         demo.addLocalParticipant(new TitForTat());
