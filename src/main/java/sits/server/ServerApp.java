@@ -24,16 +24,28 @@ public class ServerApp {
     public TournamentRegistry tournamentRegistry() {
         TournamentRegistry registry = new TournamentRegistry();
 
+        // Anonymous subclass adds a 10-second pause before round 1 fires, giving
+        // the viewer time to click Watch after the start endpoint is hit.
         NetworkedTournament demo = new NetworkedTournament(
                 "ipd-1",
                 "Demo IPD Tournament",
                 new RoundRobin(),
-                new IteratedPrisonersDilemma(50),
+                new IteratedPrisonersDilemma(30),
                 PrisonerAction::valueOf
-        );
+        ) {
+            @Override
+            public sits.tournament.TournamentResult start() {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                return super.start();
+            }
+        };
         demo.addLocalParticipant(new TitForTat());
         demo.addLocalParticipant(new AlwaysDefect());
-        demo.setDelayMs(1000);
+        demo.setDelayMs(2000);
         registry.add(demo);
 
         return registry;
