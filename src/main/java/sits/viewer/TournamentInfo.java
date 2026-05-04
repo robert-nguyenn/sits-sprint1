@@ -1,5 +1,8 @@
 package sits.viewer;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TournamentInfo {
     public String id;
     public String name;
