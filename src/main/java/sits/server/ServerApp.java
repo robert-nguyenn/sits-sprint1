@@ -49,7 +49,7 @@ public class ServerApp {
         demo.addLocalParticipant(new TitForTat());
         demo.addLocalParticipant(new AlwaysCooperate());
         demo.addLocalParticipant(new AlwaysDefect());
-        demo.setDelayMs(2000);
+        demo.setDelayMs(1000);
         registry.add(demo);
 
         // ipd-2: all-local backup tournament. Three participants -> 3 pairings.
@@ -75,7 +75,7 @@ public class ServerApp {
         localOnly.addLocalParticipant(new TitForTat());
         localOnly.addLocalParticipant(new AlwaysCooperate());
         localOnly.addLocalParticipant(new AlwaysDefect());
-        localOnly.setDelayMs(2000);
+        localOnly.setDelayMs(1000);
         registry.add(localOnly);
 
         return registry;
