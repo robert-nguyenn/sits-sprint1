@@ -34,7 +34,7 @@ public class TournamentServerController {
 
     @GetMapping
     public List<NetworkedTournament> getTournaments() {
-        return registry.listViewable();
+        return registry.listAll();
     }
 
     @PostMapping("/{id}/register")

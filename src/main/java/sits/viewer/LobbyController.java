@@ -38,7 +38,8 @@ public class LobbyController {
         });
 
         tournamentList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            watchButton.setDisable(newVal == null || !"RUNNING".equals(newVal.status));
+            watchButton.setDisable(newVal == null
+                    || !("RUNNING".equals(newVal.status) || "COMPLETED".equals(newVal.status)));
         });
         watchButton.setDisable(true);
     }
@@ -56,7 +57,8 @@ public class LobbyController {
     @FXML
     private void handleWatch(ActionEvent event) {
         TournamentInfo selected = tournamentList.getSelectionModel().getSelectedItem();
-        if (selected != null && "RUNNING".equals(selected.status)) {
+        if (selected != null
+                && ("RUNNING".equals(selected.status) || "COMPLETED".equals(selected.status))) {
             watchTournament(selected);
         }
     }

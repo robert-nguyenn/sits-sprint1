@@ -47,4 +47,8 @@ public class TournamentRegistry {
 
         return viewable;
     }
+
+    public List<NetworkedTournament> listAll() {
+        return new ArrayList<>(tournaments.values());
+    }
 }
