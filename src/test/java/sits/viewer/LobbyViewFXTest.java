@@ -62,7 +62,8 @@ public class LobbyViewFXTest {
     }
 
     private void pressWatch(FxRobot robot) {
-        robot.clickOn("Watch");
+        Button watch = findButton("Watch");
+        Platform.runLater(watch::fire);
         WaitForAsyncUtils.waitForFxEvents();
     }
 
