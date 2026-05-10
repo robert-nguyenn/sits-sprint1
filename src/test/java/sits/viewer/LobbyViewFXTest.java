@@ -14,6 +14,7 @@ import org.testfx.util.WaitForAsyncUtils;
 
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,11 +24,13 @@ import javafx.stage.Stage;
 @ExtendWith(ApplicationExtension.class)
 public class LobbyViewFXTest {
 
+    private Stage testStage;
     private MutableFakeConnection connection;
     private LobbyController controller;
 
     @Start
     private void start(Stage stage) throws Exception {
+        this.testStage = stage;
         connection = new MutableFakeConnection();
         connection.tournaments.add(new TournamentInfo("t1", "Open Tournament", "REGISTERING"));
         connection.tournaments.add(new TournamentInfo("t2", "Live Tournament", "RUNNING"));
@@ -43,6 +46,15 @@ public class LobbyViewFXTest {
         WaitForAsyncUtils.waitForFxEvents();
     }
 
+    private Button findButton(String text) {
+        for (Node n : testStage.getScene().getRoot().lookupAll(".button")) {
+            if (n instanceof Button b && text.equals(b.getText())) {
+                return b;
+            }
+        }
+        throw new AssertionError("button with text '" + text + "' not found");
+    }
+
     private void selectRow(FxRobot robot, int index) {
         ListView<TournamentInfo> list = robot.lookup("#tournamentList").queryAs(ListView.class);
         Platform.runLater(() -> list.getSelectionModel().select(index));
@@ -55,7 +67,8 @@ public class LobbyViewFXTest {
     }
 
     private void pressRefresh(FxRobot robot) {
-        robot.clickOn("Refresh");
+        Button refresh = findButton("Refresh");
+        Platform.runLater(refresh::fire);
         WaitForAsyncUtils.waitForFxEvents();
     }
 
